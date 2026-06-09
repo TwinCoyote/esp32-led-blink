@@ -8,6 +8,8 @@ on:
 jobs:
   build-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout Repo
@@ -22,6 +24,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             .pio/build/esp32dev/firmware.bin
             .pio/build/esp32dev/bootloader.bin
