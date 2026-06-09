@@ -1,32 +1,25 @@
-name: ESP32 Firmware CI
+name: Multi Board Firmware CI
 
 on:
   push:
     branches:
       - main
-      - dev
-  pull_request:
 
 jobs:
-  build-firmware:
+  build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        board:
+          - esp32dev
+          - esp32-s3-devkitc-1
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Install PlatformIO
         run: pip install platformio
 
-      - name: Verify PlatformIO
-        run: pio --version
-
       - name: Build Firmware
-        run: pio run
-
-      - name: Upload Firmware Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: esp32-firmware
-          path: |
-            .pio/build/esp32dev/*.bin
+        run: pio run -e ${{ matrix.board }}
